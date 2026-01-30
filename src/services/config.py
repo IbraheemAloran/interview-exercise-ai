@@ -28,7 +28,7 @@ class EmbeddingServiceConfig:
 
 @dataclass
 class LLMServiceConfig:
-    api_key: str
+    api_key: str = ""
     model: str = "gemini-3-flash-preview"
 
 
@@ -40,5 +40,6 @@ class TicketResponse(BaseModel):
 
 class TicketRequest(BaseModel):
     query: str
+    context: List[dict]
 
 
