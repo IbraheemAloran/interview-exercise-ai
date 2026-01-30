@@ -1,0 +1,104 @@
+# Account Recovery and Password Reset
+
+## Password Reset
+
+### I Forgot My Password
+
+If you've forgotten your password:
+
+1. Go to the login page
+2. Click "Forgot Password" link
+3. Enter your email address or username
+4. Check your email for password reset instructions
+5. Click the reset link (valid for 24 hours)
+6. Create a new strong password
+
+**Important**:
+- Reset links expire after 24 hours
+- You must have access to the email address on your account
+- If you don't receive the email, check your spam folder
+- Contact support if you don't receive the reset email within 15 minutes
+
+### Creating a Strong Password
+
+Your password must:
+- Be at least 12 characters long
+- Include uppercase and lowercase letters
+- Include at least one number
+- Include at least one special character
+- Not be a common word or phrase
+- Not contain your username or email
+
+## Account Recovery
+
+### I Lost Access to My Email
+
+If you no longer have access to the email address on your account:
+
+1. Contact support immediately
+2. Provide proof of account ownership:
+   - Government-issued photo ID
+   - Previous invoices or receipts
+   - Last 4 digits of payment method
+   - Account creation date (if known)
+   - Domain names associated with account
+3. Answer security questions (if set)
+4. Allow 2-3 business days for manual verification
+
+### Account Compromised
+
+If you suspect your account has been compromised:
+
+1. **Immediately**: Contact support via phone or urgent ticket
+2. Change your password (if you still have access)
+3. Enable two-factor authentication (2FA)
+4. Review recent account activity
+5. Check for unauthorized changes:
+   - Domain transfers
+   - Payment method changes
+   - Email address changes
+   - DNS modifications
+
+### Two-Factor Authentication (2FA)
+
+**Setting Up 2FA**:
+1. Go to **Settings > Security**
+2. Click "Enable Two-Factor Authentication"
+3. Scan QR code with authenticator app
+4. Enter verification code to confirm
+5. Save backup codes in a secure location
+
+**Recovery Codes**:
+- Generated when you enable 2FA
+- Use if you lose access to your authenticator app
+- Store in a secure location (password manager)
+- Can be regenerated if lost
+
+## Username Recovery
+
+### I Forgot My Username
+
+1. Go to the login page
+2. Click "Forgot Username"
+3. Enter your email address
+4. Check your email for your username
+5. If email not received, contact support
+
+## Account Lockout
+
+### My Account is Locked
+
+Accounts may be locked after multiple failed login attempts:
+
+1. Wait 30 minutes for automatic unlock
+2. Use password reset to unlock immediately
+3. Contact support if account remains locked
+4. Provide account information for verification
+
+## Follow-Up Required
+
+If account recovery requires additional verification:
+- Support will contact you via phone or email
+- Respond promptly to verification requests
+- Provide requested documentation
+- Allow 2-5 business days for complete recovery
