@@ -1,18 +1,302 @@
-# 🧠 AI Coding Challenge: Knowledge Assistant for Support Team
+# RAG Ticket Support System
 
-Welcome to the AI engineering challenge! This is part of the interview process for the AI Engineer role (1–3 years experience). The goal is to design a minimal **LLM-powered RAG system** that helps a support team respond to customer tickets efficiently using relevant documentation.
+A production-ready Retrieval-Augmented Generation (RAG) system for intelligent ticket support automation. This system leverages embeddings, semantic search, and large language models to provide accurate, context-aware responses to customer support tickets.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [System Architecture](#system-architecture)
+- [Tech Stack](#tech-stack)
+- [Setup Instructions](#setup-instructions)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Future Improvements](#future-improvements)
+- [Author](#author)
 
 ---
 
-## 📌 Problem Statement
+## Overview
 
-You will build a **Knowledge Assistant** that can analyze customer support queries and return structured, relevant, and helpful responses. The assistant should use a **Retrieval-Augmented Generation (RAG)** pipeline powered by an **LLM** and follow the **Model Context Protocol (MCP)** to produce structured output.
+The RAG Ticket Support System automates customer support by:
 
-### 🎯 Sample Input (Support Ticket):
+- **Retrieving** relevant support documentation based on customer queries
+- **Augmenting** LLM prompts with context from knowledge base documents
+- **Generating** accurate, well-informed responses to support tickets
+
+### Key Features
+
+✅ **Semantic Search** - Retrieves relevant documentation using embeddings and vector similarity  
+✅ **Context-Aware Responses** - LLM augmented with support documentation context  
+✅ **Multi-Document Support** - Processes multiple support guides and policies  
+✅ **REST API** - FastAPI-based HTTP endpoint for easy integration  
+✅ **Containerized** - Docker and Docker Compose for seamless deployment  
+✅ **Comprehensive Logging** - Full audit trail of requests and operations  
+✅ **CORS Enabled** - Configurable cross-origin resource sharing  
+✅ **Health Checks** - System status monitoring endpoints
+
+---
+
+---
+
+## System Architecture
+
+### Architecture Diagram
+
 ```
-My domain was suspended and I didn’t get any notice. How can I reactivate it?
+┌─────────────────────────────────────────────────────────────┐
+│                    Client / Frontend                         │
+│               (HTTP REST API Consumer)                       │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+                     ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   FastAPI Server                             │
+│              (API Gateway & Orchestrator)                    │
+└────────────────┬────────────────────────┬────────────────────┘
+                 │                        │
+         ┌───────▼─────────┐      ┌──────▼──────────┐
+         │  Text Processor │      │  ServiceContainer│
+         │  - FileLoader   │      │  - LLM Service   │
+         │  - TextChunker  │      │  - Embeddings    │
+         └────────┬────────┘      │  - Vector Store  │
+                  │               │  - RAG Agent     │
+                  ▼               └──────┬───────────┘
+    ┌────────────────────────┐           │
+    │ Knowledge Base (Data)  │           │
+    │ - account_recovery     │           │
+    │ - domain_suspension    │           │
+    │ - technical_support    │           │
+    └────────────────────────┘           │
+                                         │
+                  ┌──────────────────────┘
+                  │
+     ┌────────────▼────────────┐
+     │  Embedding Service      │
+     │  (Sentence Transformers)│
+     └────────────┬────────────┘
+                  │
+     ┌────────────▼────────────┐
+     │   Vector Store (FAISS)  │
+     │   - Dense Vector Index  │
+     │   - Similarity Search   │
+     └────────────┬────────────┘
+                  │
+     ┌────────────▼────────────┐
+     │    RAG Agent            │
+     │  - Query Embedding      │
+     │  - Document Retrieval   │
+     │  - Relevancy Check      │
+     │  - Prompt Building      │
+     └────────────┬────────────┘
+                  │
+     ┌────────────▼────────────┐
+     │   LLM Service           │
+     │   (Google Generative AI)│
+     │   - API Communication   │
+     │   - Response Generation │
+     └────────────────────────┘
 ```
-### ✅ Expected Output (MCP-compliant JSON):
+
+### Data Flow
+
+1. **User Query** → FastAPI endpoint receives support ticket
+2. **Text Processing** → Query is embedded into vector representation
+3. **Retrieval** → FAISS vector store retrieves top-k most similar documents
+4. **Relevancy Check** → System verifies retrieved documents meet relevancy threshold
+5. **Prompt Building** → Context-aware prompt constructed with retrieved documents
+6. **LLM Generation** → Google Generative AI generates structured response
+7. **Response** → Formatted ticket response returned to client
+
+---
+
+## Tech Stack
+
+| Component           | Technology               |
+| ------------------- | ------------------------ |
+| **Web Framework**   | FastAPI                  |
+| **LLM Provider**    | Google Generative AI     |
+| **Embeddings**      | Sentence Transformers    |
+| **Vector Database** | FAISS                    |
+| **Deep Learning**   | PyTorch                  |
+| **NLP Pipeline**    | Transformers             |
+| **Chunking**        | LangChain Text Splitters |
+| **Server**          | Uvicorn                  |
+| **Math/Arrays**     | NumPy                    |
+
+## Setup Instructions
+
+### Option 1: Local Development Setup
+
+#### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd ai-interview
+```
+
+#### 2. Create Virtual Environment
+
+```bash
+python -m venv venv
+
+# On Windows
+venv\Scripts\activate
+
+# On macOS/Linux
+source venv/bin/activate
+```
+
+#### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+#### 4. Set Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+GOOGLE_API_KEY=your_google_api_key_here
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000
+ENV=development
+```
+
+#### 5. Verify Knowledge Base Files
+
+Ensure support documents exist in `src/data/`:
+
+- `account_recovery.txt`
+- `domain_suspension_policy.txt`
+- `technical_support_guide.txt`
+
+#### 6. Run the Application
+
+```bash
+cd src/api
+uvicorn app:app --reload --port 8000
+```
+
+The API will be available at `http://localhost:8000`
+
+**API Documentation**: Visit `http://localhost:8000/docs` for interactive Swagger UI
+
+---
+
+### Option 2: Docker Setup
+
+#### 1. Build Docker Image
+
+```bash
+docker build -t rag-support-system .
+```
+
+#### 2. Set Environment Variables
+
+Update `docker-compose.yml` or create `.env.docker`:
+
+```env
+GOOGLE_API_KEY=your_google_api_key_here
+ENV=production
+```
+
+#### 3. Run with Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+Access the API at `http://localhost:8000`
+
+#### 4. View Logs
+
+```bash
+docker-compose logs -f api
+```
+
+#### 5. Stop Services
+
+```bash
+docker-compose down
+```
+
+---
+
+## Usage
+
+### Quick Start: Interactive Swagger UI
+
+The easiest way to test the API is through the interactive Swagger UI:
+
+1. **Start the server** (if not already running):
+   ```bash
+   cd src/api
+   uvicorn app:app --reload --port 8000
+   ```
+
+2. **Open Swagger UI**:
+   - Navigate to: `http://localhost:8000/docs`
+   - All endpoints with request/response examples are documented
+   - Click "Try it out" on any endpoint to test directly in the browser
+
+---
+
+### API Endpoints
+
+#### Health Check
+
+**Using Swagger UI:**
+- Open `http://localhost:8000/docs`
+- Find the `GET /health` endpoint
+- Click "Try it out" and then "Execute"
+
+**Using cURL:**
+
+```bash
+curl -X GET "http://localhost:8000/health" \
+  -H "accept: application/json"
+```
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "services": {
+    "llm_initialized": true,
+    "embedding_initialized": true,
+    "vector_store_initialized": true,
+    "vector_store_size": 150,
+    "rag_initialized": true
+  }
+}
+```
+
+#### Process Support Ticket
+
+**Using Swagger UI:**
+1. Navigate to `http://localhost:8000/docs`
+2. Expand the `POST /resolve-ticket` endpoint
+3. Click "Try it out"
+4. Enter the following in the request body:
+   ```json
+   {
+     "query": "My domain was suspended and I didn't get any notice. How can I reactivate it?"
+   }
+   ```
+5. Click "Execute" and view the response
+
+**Using cURL:**
+
+```
+curl -X POST "http://localhost:8000/resolve-ticket" \
+  -H "Content-Type: application/json" \
+  -d "{
+    "query": "My domain was suspended and I didn't get any notice. How can I reactivate it?"
+  }"
+
+```
+
+**Response:**
 ```json
 {
   "answer": "Your domain may have been suspended due to a violation of policy or missing WHOIS information. Please update your WHOIS details and contact support.",
@@ -21,59 +305,115 @@ My domain was suspended and I didn’t get any notice. How can I reactivate it?
 }
 ```
 
-## 🔧 Requirements
-### 1.  RAG Pipeline
-- Embed sample support docs and policy FAQs (provided or synthetic).
-- Use a vector database (e.g., FAISS, Qdrant, etc.) to retrieve context based on the query.
+## Project Structure
 
-### 2.  LLM Integration
-- Use a language model (e.g., OpenAI GPT, LLaMA2 via Ollama, Mistral, etc.)
-- Inject context and query into the prompt to generate the final answer.
+```
+ai-interview/
+├── README.md                          # This file
+├── Dockerfile                         # Container image definition
+├── docker-compose.yml                 # Multi-container orchestration
+├── requirements.txt                   # Python dependencies
+├── .env                               # Environment configuration
+│
+├── src/
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── app.py                     # FastAPI application & endpoints
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── config.py                  # Configuration & constants
+│   │   ├── logger_config.py           # Logging setup
+│   │   ├── EmbeddingService.py        # Text embedding logic
+│   │   ├── LLMService.py              # LLM API integration
+│   │   ├── VectorStore.py             # FAISS vector database
+│   │   ├── RAGService.py              # RAG orchestration
+│   │   ├── PromptBuilder.py           # Prompt engineering
+│   │   └── TextProcessor.py           # Document loading & chunking
+│   │
+│   ├── data/
+│   │   ├── account_recovery.txt       # Knowledge base: account recovery
+│   │   ├── domain_suspension_policy.txt # Knowledge base: policies
+│   │   └── technical_support_guide.txt # Knowledge base: tech support
+│   │
+│   └── tests/
+│       ├── test_embedding_service.py
+│       ├── test_llm_service.py
+│       ├── test_prompt_builder.py
+│       ├── test_rag_service.py
+│       ├── test_text_processor.py
+│       └── test_vector_store.py
+```
 
-### 3.  MCP (Model Context Protocol)
-- Prompt should have clearly defined role, context, task, and output schema.
-- Output must be valid JSON in the following format:
-  ```json
-  {
-    "answer": "...",
-    "references": [...],
-    "action_required": "..."
-  }
-  ```
-### 4.  API Endpoint
-- Expose a single endpoint: POST /resolve-ticket
-- Input: { "ticket_text": "..." }
-- Output: structured JSON response as shown above
+---
 
-## 📂 Suggested Tech Stack (Use what you're comfortable with)
-- Languages: Python or Go
-- Embedding Models: Sentence Transformers / OpenAI / HuggingFace
-- Vector Store: FAISS, Qdrant, Weaviate, etc.
-- LLMs: OpenAI, Ollama, Local LLM, or APIs
-- API: FastAPI (Python), Gin/Fiber (Go)
-- Docker Compose
+## Future Improvements
 
-## 📝 Scoring Criteria (Total: 100 Points)
+- [ ] **Response Confidence Scoring** - Provide confidence metrics for generated responses
+- [ ] **Caching Layer** - Integrate cache for frequent responses
+- [ ] **Feedback Loop** - User ratings to improve response quality
+- [ ] **Dashboard** - Analytics and monitoring interface
+- [ ] **Advanced Chunking** - Semantic chunking, Document chunking, Parent-Child Chunking, etc
+- [ ] **Hybrid Search** - Combine semantic + keyword-based search + reranking
+- [ ] **Performance Optimization** - Model quantization and optimization
 
-| Criteria                     | Description                                                                 | Points |
-|------------------------------|-----------------------------------------------------------------------------|--------|
-| Correctness & Functionality | Does the assistant generate accurate and relevant responses?                 | 35     |
-| RAG Architecture           | Is the retrieval pipeline well-structured, efficient, and properly integrated? | 20     |
-| Prompt Design (MCP)        | Is the prompt construction clear, structured, and aligned with MCP principles? | 15     |
-| Code Quality & Modularity | Is the code clean, readable, modular, and maintainable and covered with unit tests?                      | 20     |
-| Documentation             | Is the `README.md` clear, with setup instructions and design explanation?    | 10     |
-|                             | **Total**                                                                   | **100** |
+## Running Tests
 
-## 🚀 Getting Started
-- Fork this repository (do not clone directly)
-- Work within your forked copy
-- Add your code in /src and include a clear README.md with setup instructions
-- Commit your changes regularly
-- Once complete, follow the submission instructions below
+Execute the test suite:
 
-## 📬 Submission Instructions
-- You have 1 week to complete the challenge.
-- We expect this to take around 1–2 focused days of work.
-- Once complete:
-  - Push your forked repo to GitHub
-  - Submit the repository link through the portal in the original email.
+```bash
+# Run all tests
+pytest src/tests/
+
+# Run specific test file
+pytest src/tests/test_rag_service.py
+
+# Run with coverage
+pytest src/tests/
+```
+
+---
+
+## Troubleshooting
+
+### Issue: `GOOGLE_API_KEY not set` Warning
+
+**Solution:** Set your Google API key in `.env` file:
+
+```env
+GOOGLE_API_KEY=your_key_here
+```
+
+### Issue: `No documents found in data directory`
+
+**Solution:** Ensure text files exist in `src/data/`:
+
+```bash
+ls -la src/data/
+# Should show: account_recovery.txt, domain_suspension_policy.txt, technical_support_guide.txt
+```
+
+### Issue: Port 8000 Already in Use
+
+**Solution:**
+
+```bash
+# Use different port
+uvicorn app:app --port 8001
+```
+
+### Issue: CORS Errors
+
+**Solution:** Update `ALLOWED_ORIGINS` in `.env`:
+
+```env
+ALLOWED_ORIGINS=http://localhost:3000,http://your-domain.com
+```
+
+## Author
+
+Ibraheem Aloran
+
+AI Engineer
+
+---
