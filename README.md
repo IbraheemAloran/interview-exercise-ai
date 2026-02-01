@@ -300,7 +300,7 @@ curl -X POST "http://localhost:8000/resolve-ticket" \
 ```json
 {
   "answer": "Your domain may have been suspended due to a violation of policy or missing WHOIS information. Please update your WHOIS details and contact support.",
-  "references": ["Policy: Domain Suspension Guidelines, Section 4.2"],
+  "references": ["Domain Suspension Guidelines"],
   "action_required": "escalate_to_abuse_team"
 }
 ```
@@ -367,9 +367,6 @@ pytest src/tests/
 
 # Run specific test file
 pytest src/tests/test_rag_service.py
-
-# Run with coverage
-pytest src/tests/
 ```
 
 ---
