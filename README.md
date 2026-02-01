@@ -117,11 +117,34 @@ The RAG Ticket Support System automates customer support by:
 | **LLM Provider**    | Google Generative AI     |
 | **Embeddings**      | Sentence Transformers    |
 | **Vector Database** | FAISS                    |
-| **Deep Learning**   | PyTorch                  |
-| **NLP Pipeline**    | Transformers             |
 | **Chunking**        | LangChain Text Splitters |
 | **Server**          | Uvicorn                  |
 | **Math/Arrays**     | NumPy                    |
+
+---
+
+### Tech Stack Rationale
+
+**Google Generative AI** - Provides easy access to LLMs without requiring any subscriptions or accounts. Allows custom response in model configurations to force the model to respond in desired output schema without prompt engineering.
+
+**FAISS (Facebook AI Similarity Search)** - Lightweight, open-source vector database for fast similarity search. Avoids external dependencies  while maintaining efficient query performance for knowledge bases making it ideal for fast prototyping.
+
+### System Design Rationale
+
+**RAG Pipeline Design**
+
+- **Text Chunking**: Breaking documents into manageable chunks using RecursiveCharacterTextSplitter, since this method provides high flexibility and balance between semantic coherence and strict character-based chunk size constraints
+
+- **Relevancy Threshold**: Prevents hallucinations by only including documents above a similarity score (default: 0.6), ensuring generated responses are grounded in knowledge base
+
+**Retrieval-Augmented Generation** over Fine-tuning
+
+- **Cost Efficiency**: No training required; updates to knowledge base take effect immediately
+- **Scalability**: New support documents can be added without retraining
+- **Traceability**: References to source documents provide accountability and debugging capability
+- **No Domain-Specific Tuning**: Generic LLM + specialized retrieval handles diverse ticket types
+
+---
 
 ## Setup Instructions
 
