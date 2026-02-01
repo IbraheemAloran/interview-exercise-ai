@@ -40,6 +40,5 @@ class TicketResponse(BaseModel):
 
 class TicketRequest(BaseModel):
     query: str
-    context: List[dict]
 
 
